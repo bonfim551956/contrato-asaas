@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gerador de Contrato — Óticas Idealize</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0f1f3d;
+    --gold: #c9a84c;
+    --gold-light: #f0d98c;
+    --cream: #faf8f3;
+    --white: #ffffff;
+    --gray: #6b7280;
+    --gray-light: #f3f4f6;
+    --border: #e2ddd4;
+    --success: #16a34a;
+    --red: #dc2626;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--navy);
+    min-height: 100vh;
+    color: var(--navy);
+  }
+
+  /* Background pattern */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 20% 50%, rgba(201,168,76,0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(201,168,76,0.05) 0%, transparent 40%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page-wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 40px 20px 60px;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+  .header-badge {
+    display: inline-block;
+    background: rgba(201,168,76,0.15);
+    border: 1px solid rgba(201,168,76,0.3);
+    color: var(--gold-light);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 100px;
+    margin-bottom: 16px;
+  }
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 5vw, 42px);
+    color: var(--white);
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+  .header h1 span { color: var(--gold); }
+  .header p {
+    color: rgba(255,255,255,0.5);
+    font-size: 14px;
+    font-weight: 300;
+  }
+
+  /* Card */
+  .card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(201,168,76,0.15);
+  }
+
+  /* Section label */
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    margin-top: 30px;
+  }
+  .section-label:first-child { margin-top: 0; }
+  .section-label .dot {
+    width: 8px; height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .section-label span {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* Grid */
+  .grid { display: grid; gap: 16px; }
+  .grid-2 { grid-template-columns: 1fr 1fr; }
+  .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+  @media (max-width: 560px) {
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .card { padding: 24px 18px; }
+  }
+
+  /* Field */
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--navy);
+    letter-spacing: 0.5px;
+  }
+  .field label .req { color: var(--red); margin-left: 2px; }
+
+  .field input, .field select {
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 14px;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--navy);
+    background: var(--cream);
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    outline: none;
+    width: 100%;
+  }
+  .field input:focus, .field select:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.12);
+    background: var(--white);
+  }
+  .field input::placeholder { color: #aaa; }
+
+  /* Divider */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 28px 0;
+  }
+
+  /* Preview box */
+  .preview-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--navy);
+    color: var(--white);
+    border-radius: 12px;
+    padding: 14px 18px;
+    cursor: pointer;
+    margin-top: 28px;
+    transition: background 0.2s;
+    user-select: none;
+  }
+  .preview-toggle:hover { background: #1a3060; }
+  .preview-toggle span { font-size: 13px; font-weight: 500; }
+  .preview-toggle .icon { font-size: 16px; transition: transform 0.3s; }
+  .preview-toggle.open .icon { transform: rotate(180deg); }
+
+  .preview-box {
+    display: none;
+    margin-top: 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    background: var(--cream);
+    font-size: 13px;
+    line-height: 1.8;
+    color: #333;
+  }
+  .preview-box.show { display: block; }
+  .preview-box .highlight {
+    background: rgba(201,168,76,0.2);
+    border-radius: 3px;
+    padding: 0 3px;
+    font-weight: 600;
+    color: var(--navy);
+  }
+  .preview-box p { margin-bottom: 8px; }
+  .preview-box strong { color: var(--navy); }
+
+  /* Generate button */
+  .btn-generate {
+    width: 100%;
+    margin-top: 28px;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--gold) 0%, #a8813a 100%);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+    box-shadow: 0 6px 20px rgba(201,168,76,0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .btn-generate:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 28px rgba(201,168,76,0.45);
+  }
+  .btn-generate:active { transform: translateY(0); }
+  .btn-generate:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  .btn-generate svg { width: 18px; height: 18px; }
+
+  /* Footer */
+  .footer-note {
+    text-align: center;
+    margin-top: 24px;
+    color: rgba(255,255,255,0.3);
+    font-size: 12px;
+  }
+
+  /* Print / PDF styles */
+  @media print {
+    body { background: white !important; }
+    body::before { display: none; }
+    .page-wrapper { padding: 0; max-width: 100%; }
+    .card { box-shadow: none; border-radius: 0; padding: 0; }
+    .header, .section-label, .btn-generate, .preview-toggle, .footer-note,
+    .field label, .grid, .divider { display: none !important; }
+    .print-document { display: block !important; }
+  }
+
+  /* Document for print */
+  .print-document {
+    display: none;
+    font-family: 'Times New Roman', serif;
+    font-size: 12pt;
+    line-height: 1.6;
+    color: #000;
+  }
+  .print-document .doc-title {
+    text-align: center;
+    font-size: 14pt;
+    font-weight: bold;
+    margin-bottom: 24pt;
+    text-transform: uppercase;
+  }
+  .print-document .doc-body { text-align: justify; }
+  .print-document .clause-title {
+    font-weight: bold;
+    margin-top: 16pt;
+    margin-bottom: 6pt;
+  }
+  .print-document .clause-body { margin-bottom: 6pt; }
+  .print-document .paragraph { margin-bottom: 6pt; padding-left: 24pt; }
+  .print-document .signatures {
+    margin-top: 40pt;
+    display: flex;
+    flex-direction: column;
+    gap: 28pt;
+  }
+  .print-document .sig-line {
+    border-top: 1px solid #000;
+    width: 60%;
+    margin: 0 auto;
+    text-align: center;
+    padding-top: 4pt;
+    font-size: 11pt;
+  }
+  .print-document .witnesses {
+    margin-top: 30pt;
+    display: flex;
+    gap: 40pt;
+  }
+  .print-document .witness { flex: 1; }
+  .print-document .witness .sig-line { width: 100%; margin: 0; }
+  .print-document .local-data {
+    margin-top: 30pt;
+    text-align: right;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-wrapper">
+  <div class="header">
+    <div class="header-badge">📄 Sistema de Documentos</div>
+    <h1>Gerador de <span>Contrato</span></h1>
+    <p>Preencha os campos abaixo e gere o PDF para impressão</p>
+  </div>
+
+  <div class="card">
+
+    <!-- ADQUIRENTE -->
+    <div class="section-label"><div class="dot"></div><span>Dados do Adquirente</span></div>
+    <div class="grid grid-2">
+      <div class="field">
+        <label>Nome Completo <span class="req">*</span></label>
+        <input type="text" id="nome" placeholder="Ex: João da Silva" oninput="atualizar()">
+      </div>
+      <div class="field">
+        <label>CPF <span class="req">*</span></label>
+        <input type="text" id="cpf" placeholder="000.000.000-00" maxlength="14" oninput="mascaraCPF(this); atualizar()">
+      </div>
+    </div>
+    <div class="grid" style="margin-top:16px;">
+      <div class="field">
+        <label>CEP <span class="req">*</span></label>
+        <input type="text" id="cep" placeholder="00000-000" maxlength="9" oninput="mascaraCEP(this); atualizar()">
+      </div>
+    </div>
+
+    <!-- CRÉDITO -->
+    <div class="section-label"><div class="dot"></div><span>Dados do Crédito</span></div>
+    <div class="grid grid-3">
+      <div class="field">
+        <label>Valor Total (R$) <span class="req">*</span></label>
+        <input type="text" id="valor" placeholder="Ex: 300,00" oninput="atualizar()">
+      </div>
+      <div class="field">
+        <label>Número do Pedido <span class="req">*</span></label>
+        <input type="text" id="pedido" placeholder="Ex: 3592" oninput="atualizar()">
+      </div>
+      <div class="field">
+        <label>Vencimento 1ª Parcela <span class="req">*</span></label>
+        <input type="date" id="vencimento" oninput="atualizar()">
+      </div>
+    </div>
+
+    <!-- DATA/LOCAL -->
+    <div class="section-label"><div class="dot"></div><span>Data e Local de Assinatura</span></div>
+    <div class="grid grid-2">
+      <div class="field">
+        <label>Cidade <span class="req">*</span></label>
+        <input type="text" id="cidade" value="São Vicente" oninput="atualizar()">
+      </div>
+      <div class="field">
+        <label>Data de Assinatura <span class="req">*</span></label>
+        <input type="date" id="dataAssinatura" oninput="atualizar()">
+      </div>
+    </div>
+
+    <!-- Preview -->
+    <div class="preview-toggle" id="previewToggle" onclick="togglePreview()">
+      <span>👁 Visualizar prévia do contrato</span>
+      <span class="icon">▼</span>
+    </div>
+    <div class="preview-box" id="previewBox"></div>
+
+    <!-- Botão -->
+    <button class="btn-generate" onclick="gerarPDF()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M12 10v6m0 0l-3-3m3 3l3-3M3 17v3a1 1 0 001 1h16a1 1 0 001-1v-3M3 7V5a1 1 0 011-1h3l2 3h6l2-3h3a1 1 0 011 1v2"/>
+      </svg>
+      Gerar PDF para Impressão
+    </button>
+
+  </div>
+
+  <div class="footer-note">Óticas Idealize · CNPJ 58.849.594/0001-90 · Sistema Interno</div>
+</div>
+
+<!-- Documento para impressão -->
+<div class="print-document" id="printDoc"></div>
+
+<script>
+const MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+
+function mascaraCPF(el) {
+  let v = el.value.replace(/\D/g,'').slice(0,11);
+  v = v.replace(/(\d{3})(\d)/,'$1.$2');
+  v = v.replace(/(\d{3})(\d)/,'$1.$2');
+  v = v.replace(/(\d{3})(\d{1,2})$/,'$1-$2');
+  el.value = v;
+}
+
+function mascaraCEP(el) {
+  let v = el.value.replace(/\D/g,'').slice(0,8);
+  v = v.replace(/(\d{5})(\d)/,'$1-$2');
+  el.value = v;
+}
+
+function getData() {
+  return {
+    nome: document.getElementById('nome').value.trim().toUpperCase() || '_______________',
+    cpf: document.getElementById('cpf').value.trim() || '___.___.___-__',
+    cep: document.getElementById('cep').value.trim() || '__________',
+    valor: document.getElementById('valor').value.trim() || '___________',
+    pedido: document.getElementById('pedido').value.trim() || '_______',
+    vencimento: formatarData(document.getElementById('vencimento').value),
+    cidade: document.getElementById('cidade').value.trim() || '_____________',
+    dataAssinatura: formatarDataExtenso(document.getElementById('dataAssinatura').value),
+  };
+}
+
+function formatarData(v) {
+  if (!v) return '__/__/____';
+  const [y,m,d] = v.split('-');
+  return `${d}/${m}/${y}`;
+}
+
+function formatarDataExtenso(v) {
+  if (!v) return '__ de ______ de ____';
+  const [y,m,d] = v.split('-');
+  return `${parseInt(d)} de ${MESES[parseInt(m)-1]} de ${y}`;
+}
+
+function h(t) {
+  return `<span class="highlight">${t}</span>`;
+}
+
+function gerarTextoDoc(d, paraImpressao = false) {
+  const destaque = paraImpressao ? (t) => `<strong>${t}</strong>` : h;
+  return `
+    <p>Pelo presente instrumento, de um lado <strong>IDEALIZE COMERCIO OPTICO DO LITORAL LTDA</strong> <strong>("ÓTICAS IDEALIZE")</strong>, pessoa jurídica de direito privado, com sede na <strong>Av. Antônio Emmerich, 481 - Vila Melo, São Vicente - SP, 11390-001</strong>, inscrita sob <strong>CNPJ nº 58.849.594/0001-90</strong>, e de outro lado o(a) ${destaque(d.nome)}, residente do CEP ${destaque(d.cep)}, portador(a) do CPF ${destaque(d.cpf)}, que mutuamente aceitam e outorgam:</p>
+
+    <p class="clause-title">CLÁUSULA PRIMEIRA – OBJETO</p>
+    <p>A <strong>ÓTICAS IDEALIZE</strong>, neste ato, concede ao(a) ADQUIRENTE ${destaque(d.nome)}, um crédito no valor total de <strong>R$</strong>${destaque(d.valor)} com número do pedido: ${destaque(d.pedido)}</p>
+
+    <p class="clause-title">CLÁUSULA SEGUNDA – PAGAMENTO</p>
+    <p>Para o pagamento das parcelas do crediário, que deverá ser efetuado na rede bancária ou presencialmente em loja, a <strong>ÓTICAS IDEALIZE</strong> entrega ao(a) <strong>ADQUIRENTE</strong> os boletos emitidos por meio da empresa <strong>ASAAS</strong>. O eventual extravio ou demora no recebimento de tais boletos não será motivo para qualquer atraso nos pagamentos das parcelas, nos respectivos vencimentos, cabendo ao(a) <strong>ADQUIRENTE</strong> pagá-las diretamente à <strong>ÓTICAS IDEALIZE</strong> contrarrecibo.</p>
+
+    <p>§1º. O vencimento do primeiro boleto dar-se-á ${destaque(d.vencimento)},</p>
+    <p>§2º. É vedado ao(a) <strong>ADQUIRENTE</strong> efetuar o pagamento das parcelas fora da ordem sequencial.</p>
+    <p>§3º. Fica assegurado à <strong>ÓTICAS IDEALIZE</strong> que, caso ocorra atraso no pagamento de qualquer das parcelas, considerar-se-ão automaticamente vencidas e exigíveis todas as demais, com os acréscimos do §4º.</p>
+    <p>§4º. No caso de mora, sobre o valor da dívida em atraso, incidirão juros, multa de 10% (dez por cento) sobre o total, despesas de cobrança, custas, honorários advocatícios.</p>
+    <p>§5º. Fica o(a) <strong>ADQUIRENTE</strong> ciente de que a falta de pagamento implicará na inclusão do seu nome e CPF nos órgãos de proteção ao crédito, a título de exemplo, mas a estes não se limitando, SPC/SERASA.</p>
+
+    <p class="clause-title">CLÁUSULA TERCEIRA – DO DEVER DE INFORMAÇÃO</p>
+    <p>O presente termo observa rigorosamente o dever de informação preconizado pelo artigo 6º, III, XI, do Código de Defesa do Consumidor.</p>
+    <p>§1º. Tratando-se de aquisição realizada na sede física da <strong>ÓTICAS IDEALIZE</strong>, ao <strong>ADQUIRENTE</strong> não é facultado o exercício do direito de arrependimento preconizado no artigo 49 do Código de Defesa do Consumidor.</p>
+
+    <p class="clause-title">CLÁUSULA QUARTA – DO FORO</p>
+    <p>Fica eleito o foro da comarca onde foi firmado este termo como competente para dirimir questões ou controvérsias que se originarem do presente, com exclusão de qualquer outro, por mais privilegiado que seja.</p>
+
+    <p>E assim, por estarem justos e ajustados, firmam o presente na presença das testemunhas abaixo identificadas.</p>
+
+    <p class="local-data">${destaque(d.cidade)}, ${destaque(d.dataAssinatura)}.</p>
+  `;
+}
+
+function atualizar() {
+  const d = getData();
+  if (document.getElementById('previewBox').classList.contains('show')) {
+    document.getElementById('previewBox').innerHTML = gerarTextoDoc(d);
+  }
+}
+
+let previewAberto = false;
+function togglePreview() {
+  previewAberto = !previewAberto;
+  const box = document.getElementById('previewBox');
+  const toggle = document.getElementById('previewToggle');
+  if (previewAberto) {
+    box.innerHTML = gerarTextoDoc(getData());
+    box.classList.add('show');
+    toggle.classList.add('open');
+  } else {
+    box.classList.remove('show');
+    toggle.classList.remove('open');
+  }
+}
+
+function gerarPDF() {
+  const d = getData();
+
+  // Validação básica
+  const camposObrig = ['nome','cpf','cep','valor','pedido','vencimento','cidade','dataAssinatura'];
+  const ids = ['nome','cpf','cep','valor','pedido','vencimento','cidade','dataAssinatura'];
+  let valido = true;
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el.value.trim()) { el.style.borderColor = '#dc2626'; valido = false; }
+    else el.style.borderColor = '';
+  });
+
+  if (!valido) {
+    alert('⚠️ Preencha todos os campos obrigatórios antes de gerar o PDF.');
+    return;
+  }
+
+  const printDoc = document.getElementById('printDoc');
+  printDoc.innerHTML = `
+    <div style="font-family:'Times New Roman',serif;font-size:12pt;line-height:1.8;color:#000;max-width:700px;margin:0 auto;padding:40px;">
+      <div style="text-align:center;font-size:14pt;font-weight:bold;margin-bottom:28pt;text-transform:uppercase;text-decoration:underline;">
+        TERMO DE ADESÃO AO CREDIÁRIO
+      </div>
+      <div style="text-align:justify;">
+        ${gerarTextoDoc(d, true)
+          .replace(/class="clause-title"/g, 'style="font-weight:bold;margin-top:16pt;display:block;"')
+          .replace(/class="local-data"/g, 'style="text-align:center;margin-top:30pt;"')
+          .replace(/class="[^"]*"/g, '')
+        }
+      </div>
+
+      <div style="margin-top:50pt;">
+        <div style="display:flex;justify-content:space-between;gap:40pt;">
+          <div style="flex:1;text-align:center;">
+            <div style="border-top:1px solid #000;padding-top:6pt;">
+              <strong>IDEALIZE COMERCIO OPTICO DO LITORAL</strong><br>
+              CNPJ nº 58.849.594/0001-90
+            </div>
+          </div>
+          <div style="flex:1;text-align:center;">
+            <div style="border-top:1px solid #000;padding-top:6pt;">
+              <strong>${d.nome}</strong><br>
+              CPF: ${d.cpf}
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:40pt;display:flex;justify-content:space-between;gap:40pt;">
+          <div style="flex:1;text-align:center;">
+            <div style="border-top:1px solid #000;padding-top:6pt;font-size:11pt;">
+              <strong>Testemunha 1</strong><br>
+              Nome: ________________________<br>
+              CPF: ___.___.___-__
+            </div>
+          </div>
+          <div style="flex:1;text-align:center;">
+            <div style="border-top:1px solid #000;padding-top:6pt;font-size:11pt;">
+              <strong>Testemunha 2</strong><br>
+              Nome: ________________________<br>
+              CPF: ___.___.___-__
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Abre janela de impressão
+  const win = window.open('', '_blank', 'width=900,height=700');
+  win.document.write(`
+    <!DOCTYPE html>
+    <html lang="pt-BR">
+    <head>
+      <meta charset="UTF-8">
+      <title>Contrato — ${d.nome}</title>
+      <style>
+        body { margin: 0; background: white; }
+        @page { size: A4; margin: 2cm 2.5cm; }
+        @media print { body { -webkit-print-color-adjust: exact; } }
+        p { margin-bottom: 8pt; }
+        .clause-title, [style*="font-weight:bold;margin-top"] { display: block; margin-top: 14pt; margin-bottom: 4pt; }
+      </style>
+    </head>
+    <body>
+      ${printDoc.innerHTML}
+      <script>
+        window.onload = function() {
+          window.print();
+          setTimeout(() => window.close(), 1000);
+        }
+      <\/script>
+    </body>
+    </html>
+  `);
+  win.document.close();
+}
+
+// Set default dates to today
+const today = new Date().toISOString().split('T')[0];
+document.getElementById('dataAssinatura').value = today;
+atualizar();
+</script>
+</body>
+</html>
