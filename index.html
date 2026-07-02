@@ -522,7 +522,7 @@ body {
 #printArea .wl { border-top: 1pt solid #000; padding-top: 5pt; font-size: 8.5pt; }
 #printArea .ds { margin-top: 10pt; border-top: 1pt dashed #bbb; padding-top: 8pt; }
 #printArea .dt { font-size: 8pt; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; color: #666; margin-bottom: 6pt; }
-#printArea .di { max-width: 210pt; max-height: 130pt; object-fit: contain; border: 1pt solid #ddd; border-radius: 4pt; display: block; }
+#printArea .di { max-width: 100%; max-height: 260pt; object-fit: contain; border: 1pt solid #ddd; border-radius: 4pt; display: block; margin: 0 auto; }
 
 /* ═══ RESPONSIVO ═══ */
 @media (max-width: 640px) {
@@ -760,7 +760,7 @@ let docB64=null, nParcelas=0, lojaAtual=null;
 
 const LOJAS = {
   sv:{ nome:'Óticas Idealize — São Vicente',  razao:'IDEALIZE COMERCIO OPTICO DO LITORAL LTDA', end:'Av. Antônio Emmerich, 481 - Vila Melo', cidade:'São Vicente - SP', cep:'11390-001', cnpj:'58.849.594/0001-90' },
-  cp:{ nome:'Óticas Idealize — Campinas',     razao:'RF SILVA OTICA ME',                      end:'Rua Barão de Jaguara, 1164 - Centro',  cidade:'Campinas - SP',   cep:'13015-002', cnpj:'43.331.384/0001-38' },
+  cp:{ nome:'Óticas Idealize — Campinas',     razao:'RF SILVA OTICA LTDA',                      end:'Rua Barão de Jaguara, 1164 - Centro',  cidade:'Campinas - SP',   cep:'13015-002', cnpj:'43.331.384/0001-38' },
   so:{ nome:'Óticas Idealize — Sorocaba',     razao:'RM COMERCIO OTICO LTDA',                   end:'Av. Comendador Hermelino Matarrazo, 471 - Vila Santa Rita', cidade:'Sorocaba - SP', cep:'18080-000', cnpj:'51.885.847/0001-31' },
   pi:{ nome:'Óticas Idealize — Piracicaba',   razao:'OTICAS IDEALIZE PIRACICABA LTDA',          end:'Rua Benjamin Constant, 1379 - Centro', cidade:'Piracicaba - SP', cep:'13400-053', cnpj:'66.317.708/0001-89' },
 };
