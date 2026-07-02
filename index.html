@@ -597,7 +597,9 @@ body {
   <!-- HEADER -->
   <div class="header">
     <img class="header-logo" src="https://raw.githubusercontent.com/bonfim551956/contrato-asaas/main/logo-light.png" alt="Oticas Idealize">
-
+    <div class="header-eyebrow">Sistema Interno</div>
+    <h1 class="header-title">Gerador de <span>Contratos</span></h1>
+    <p class="header-sub">Selecione a loja, preencha os dados e gere o PDF para impressão</p>
   </div>
 
   <!-- LOJA -->
@@ -741,6 +743,14 @@ body {
 
 
 
+  <div class="footer">
+    <span>Óticas Idealize</span>
+    <div class="footer-sep"></div>
+    <span>Sistema de Contratos</span>
+    <div class="footer-sep"></div>
+    <span>Uso Interno</span>
+  </div>
+
 </div>
 </div>
 
@@ -839,7 +849,7 @@ function corpo(d, print){
 <p class="par">§1º. Por tratar-se de aquisição na sede física, ao <strong>ADQUIRENTE</strong> não é facultado o direito de arrependimento do art. 49 do CDC.</p>
 <p class="ct">CLÁUSULA QUARTA – DO FORO</p>
 <p>Fica eleito o foro da comarca de <strong>${l.cidade.split('-')[0].trim()}</strong> para dirimir questões oriundas deste instrumento, com exclusão de qualquer outro.</p>
-<p>E assim, por estarem justos e ajustados, firmam o presente na presença das testemunhas abaixo.</p>`;
+<div class="page-break"><p>E assim, por estarem justos e ajustados, firmam o presente na presença das testemunhas abaixo.</p></div>`;
 }
 
 function atualizar(){
@@ -894,6 +904,7 @@ function gerarPDF(){
 </div>
 <div class="ptitle">Termo de Adesão ao Crediário</div>
 ${corpo(d,true)}
+<div class="page-break">
 <p class="ld">${d.cidade}, ${d.dataAss}.</p>
 <div class="sr">
   <div class="sb"><div class="sl"><strong>${l.razao}</strong><br>CNPJ nº ${l.cnpj}</div></div>
@@ -906,6 +917,7 @@ ${corpo(d,true)}
 <div class="ds">
   <div class="dt">Documento de Identificação do Adquirente</div>
   <img class="di" src="${docB64}" alt="Documento">
+</div>
 </div>`;
   const printCSS = `
     @page { size: A4; margin: 1.4cm 2cm; }
