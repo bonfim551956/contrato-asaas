@@ -907,12 +907,46 @@ ${corpo(d,true)}
   <div class="dt">Documento de Identificação do Adquirente</div>
   <img class="di" src="${docB64}" alt="Documento">
 </div>`;
-  const oldTitle = document.title;
-  document.title = ' ';
+  const printCSS = `
+    @page { size: A4; margin: 1.4cm 2cm; }
+    body { margin: 0; padding: 0; background: #fff; font-family: 'Times New Roman', Times, serif; font-size: 10.5pt; line-height: 1.55; color: #000; }
+    .ph { display: flex; align-items: flex-start; justify-content: space-between; border-bottom: 2.5pt solid #2FA7A0; padding-bottom: 8pt; margin-bottom: 12pt; }
+    .ph img { height: 42pt; }
+    .ph-r { text-align: right; font-size: 8pt; color: #333; line-height: 1.65; }
+    .ph-store { font-size: 10pt; font-weight: bold; color: #2FA7A0; margin-bottom: 2pt; }
+    .ptitle { text-align: center; font-size: 13pt; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10pt; text-decoration: underline; }
+    p { text-align: justify; margin-bottom: 5pt; }
+    .ct { font-weight: bold; margin-top: 8pt; margin-bottom: 2pt; }
+    .par { padding-left: 14pt; }
+    .ld { text-align: center; margin-top: 10pt; margin-bottom: 10pt; }
+    .sr { display: flex; justify-content: space-between; gap: 28pt; margin-bottom: 14pt; }
+    .sb { flex: 1; text-align: center; }
+    .sl { border-top: 1pt solid #000; padding-top: 5pt; font-size: 9pt; }
+    .wr { display: flex; justify-content: space-between; gap: 28pt; margin-bottom: 12pt; }
+    .wb { flex: 1; text-align: center; }
+    .wl { border-top: 1pt solid #000; padding-top: 5pt; font-size: 8.5pt; }
+    .ds { margin-top: 10pt; border-top: 1pt dashed #bbb; padding-top: 8pt; }
+    .dt { font-size: 8pt; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; color: #666; margin-bottom: 5pt; }
+    .di { max-width: 100%; max-height: 260pt; object-fit: contain; border: 1pt solid #ddd; border-radius: 4pt; display: block; margin: 0 auto; }
+  `;
+
+  const printContent = document.getElementById('printArea').innerHTML;
+  const win = window.open('', '_blank', 'width=850,height=1100');
+  win.document.write(`<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title></title>
+<style>${printCSS}</style>
+</head>
+<body>${printContent}</body>
+</html>`);
+  win.document.close();
+  win.focus();
   setTimeout(() => {
-    window.print();
-    document.title = oldTitle;
-  }, 50);
+    win.print();
+    win.close();
+  }, 400);
 }
 
 document.getElementById('dataAss').value = new Date().toISOString().split('T')[0];
