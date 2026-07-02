@@ -130,7 +130,7 @@ body {
   grid-template-columns: repeat(4, 1fr);
   gap: 10px;
 }
-@media (max-width: 600px) { .store-grid { grid-template-columns: repeat(2,1fr); } }
+
 
 .store-btn {
   background: var(--surface);
@@ -216,7 +216,7 @@ body {
     0 8px 32px rgba(14,28,38,.07),
     0 24px 64px rgba(14,28,38,.04);
 }
-@media (max-width: 600px) { .card { padding: 24px 20px; } }
+
 
 /* ═══ SECTION ═══ */
 .sec {
@@ -248,7 +248,7 @@ body {
 .g  { display: grid; gap: 16px; }
 .g2 { grid-template-columns: 1fr 1fr; }
 .g3 { grid-template-columns: 1fr 1fr 1fr; }
-@media (max-width: 600px) { .g2,.g3 { grid-template-columns: 1fr; } }
+
 .mt { margin-top: 16px; }
 
 /* ═══ FIELD ═══ */
@@ -290,6 +290,9 @@ body {
   display: grid;
   grid-template-columns: repeat(6,1fr);
   gap: 8px;
+}
+@media (max-width: 420px) {
+  .pgrid { grid-template-columns: repeat(3,1fr); }
 }
 .pbtn {
   border: 1.5px solid var(--border);
@@ -520,6 +523,68 @@ body {
 #printArea .ds { margin-top: 10pt; border-top: 1pt dashed #bbb; padding-top: 8pt; }
 #printArea .dt { font-size: 8pt; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; color: #666; margin-bottom: 6pt; }
 #printArea .di { max-width: 210pt; max-height: 130pt; object-fit: contain; border: 1pt solid #ddd; border-radius: 4pt; display: block; }
+
+/* ═══ RESPONSIVO ═══ */
+@media (max-width: 640px) {
+  .page { padding: 24px 16px 48px; }
+
+  /* Header */
+  .header { margin-bottom: 32px; }
+  .logo-wrap img, .header-logo { height: 52px !important; }
+  .header-title { font-size: 22px; }
+  .header-sub { font-size: 13px; }
+
+  /* Store selector */
+  .store-grid { grid-template-columns: repeat(2,1fr); gap: 8px; }
+  .store-btn { padding: 14px 8px; font-size: 13px; }
+  .store-badge { font-size: 12px; }
+
+  /* Card */
+  .card { padding: 24px 16px; border-radius: 16px; }
+
+  /* Grids */
+  .g2, .g3 { grid-template-columns: 1fr; }
+
+  /* Section labels */
+  .sec { margin: 24px 0 14px; }
+  .sec-num { width: 22px; height: 22px; font-size: 11px; }
+  .sec-text { font-size: 12px; }
+
+  /* Fields */
+  .field input[type="text"],
+  .field input[type="date"] { font-size: 16px; padding: 12px 13px; }
+
+  /* Parcelas - 3 per row on small screens */
+  .pgrid { grid-template-columns: repeat(3,1fr); }
+  .pbtn { padding: 12px 4px; font-size: 14px; }
+
+  /* Upload */
+  .uarea { padding: 24px 16px; }
+  .u-icon-wrap { width: 44px; height: 44px; }
+  .u-title { font-size: 13px; }
+
+  /* Preview toggle */
+  .prev-toggle { padding: 13px 15px; }
+  .prev-toggle .pt-left { font-size: 12px; gap: 8px; }
+  .prev-box { padding: 16px; font-size: 12.5px; }
+
+  /* Button */
+  .btn-gen { padding: 15px; font-size: 14px; }
+  .btn-gen .badge { display: none; }
+
+  /* Footer */
+  .footer { font-size: 11px; flex-wrap: wrap; gap: 6px; }
+}
+
+@media (max-width: 380px) {
+  .page { padding: 16px 12px 40px; }
+  .card { padding: 20px 14px; }
+  .store-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
+  .store-btn { padding: 12px 6px; font-size: 12px; }
+  .header-title { font-size: 20px; }
+  .pgrid { grid-template-columns: repeat(3,1fr); gap: 6px; }
+}
+
 </style>
 </head>
 <body>
@@ -531,7 +596,7 @@ body {
   <div class="header">
     <img class="header-logo" src="https://raw.githubusercontent.com/bonfim551956/contrato-asaas/main/logo-light.png" alt="Oticas Idealize">
     <div class="header-eyebrow">Sistema Interno</div>
-    <h1 class="header-title">Gerador de <span>Contratos Asaas</span></h1>
+    <h1 class="header-title">Gerador de <span>Contratos</span></h1>
     <p class="header-sub">Selecione a loja, preencha os dados e gere o PDF para impressao</p>
   </div>
 
@@ -696,8 +761,8 @@ let docB64=null, nParcelas=0, lojaAtual=null;
 const LOJAS = {
   sv:{ nome:'Óticas Idealize — São Vicente',  razao:'IDEALIZE COMERCIO OPTICO DO LITORAL LTDA', end:'Av. Antônio Emmerich, 481 - Vila Melo', cidade:'São Vicente - SP', cep:'11390-001', cnpj:'58.849.594/0001-90' },
   cp:{ nome:'Óticas Idealize — Campinas',     razao:'IDEALIZE COMERCIO OPTICO LTDA',            end:'Rua Barão de Jaguara, 1164 - Centro',  cidade:'Campinas - SP',   cep:'13015-002', cnpj:'43.331.384/0001-38' },
-  so:{ nome:'Óticas Idealize — Sorocaba',     razao:'IDEALIZE COMERCIO OPTICO LTDA',            end:'Endereço a preencher',                 cidade:'Sorocaba - SP',   cep:'00000-000', cnpj:'00.000.000/0000-00' },
-  pi:{ nome:'Óticas Idealize — Piracicaba',   razao:'IDEALIZE COMERCIO OPTICO LTDA',            end:'Endereço a preencher',                 cidade:'Piracicaba - SP', cep:'00000-000', cnpj:'00.000.000/0000-00' },
+  so:{ nome:'Óticas Idealize — Sorocaba',     razao:'RM COMERCIO OTICO LTDA',                   end:'Av. Comendador Hermelino Matarrazo, 471 - Vila Santa Rita', cidade:'Sorocaba - SP', cep:'18080-000', cnpj:'51.885.847/0001-31' },
+  pi:{ nome:'Óticas Idealize — Piracicaba',   razao:'OTICAS IDEALIZE PIRACICABA LTDA',          end:'Rua Benjamin Constant, 1379 - Centro', cidade:'Piracicaba - SP', cep:'13400-053', cnpj:'66.317.708/0001-89' },
 };
 
 function selecionarLoja(id){
