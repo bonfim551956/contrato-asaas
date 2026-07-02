@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gerador de Contratos — Óticas Idealize</title>
+<title>.</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -32,7 +32,9 @@
 
 /* ═══ PRINT ═══ */
 @media print {
-  @page { size: A4; margin: 1.4cm 2cm; }
+  @page { size: A4; margin: 1.4cm 2cm; margin-top: 1.4cm; }
+  @page { -webkit-print-color-adjust: exact; }
+  html { -webkit-print-color-adjust: exact; }
   .screen-only { display: none !important; }
   #printArea   { display: block !important; }
   body         { background: #fff !important; }
@@ -595,9 +597,7 @@ body {
   <!-- HEADER -->
   <div class="header">
     <img class="header-logo" src="https://raw.githubusercontent.com/bonfim551956/contrato-asaas/main/logo-light.png" alt="Oticas Idealize">
-    <div class="header-eyebrow">Sistema Interno</div>
-    <h1 class="header-title">Gerador de <span>Contratos</span></h1>
-    <p class="header-sub">Selecione a loja, preencha os dados e gere o PDF para impressao</p>
+
   </div>
 
   <!-- LOJA -->
@@ -739,13 +739,7 @@ body {
 
   </div>
 
-  <div class="footer">
-    <span>Oticas Idealize</span>
-    <div class="footer-sep"></div>
-    <span>Sistema de Contratos v4.0</span>
-    <div class="footer-sep"></div>
-    <span>Uso Interno</span>
-  </div>
+
 
 </div>
 </div>
@@ -913,7 +907,12 @@ ${corpo(d,true)}
   <div class="dt">Documento de Identificação do Adquirente</div>
   <img class="di" src="${docB64}" alt="Documento">
 </div>`;
-  window.print();
+  const oldTitle = document.title;
+  document.title = ' ';
+  setTimeout(() => {
+    window.print();
+    document.title = oldTitle;
+  }, 50);
 }
 
 document.getElementById('dataAss').value = new Date().toISOString().split('T')[0];
