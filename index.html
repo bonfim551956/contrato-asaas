@@ -677,16 +677,30 @@ body {
     </div>
     <div class="g g3">
       <div class="field">
-        <label>Valor Total (R$) <span class="req">*</span></label>
+        <label>Valor da Compra (R$) <span class="req">*</span></label>
+        <input type="text" id="valorCompra" placeholder="Ex: 500,00" oninput="atualizar()">
+      </div>
+      <div class="field">
+        <label>Valor da Entrada (R$) <span class="req">*</span></label>
+        <input type="text" id="valorEntrada" placeholder="Ex: 200,00" oninput="atualizar()">
+      </div>
+      <div class="field">
+        <label>Data Prevista da Entrada <span class="req">*</span></label>
+        <input type="date" id="dataEntrada" oninput="atualizar()">
+      </div>
+    </div>
+    <div class="g g3" style="margin-top:14px">
+      <div class="field">
+        <label>Valor Crediário (R$) <span class="req">*</span></label>
         <input type="text" id="valor" placeholder="Ex: 300,00" oninput="atualizar();calcParcela()">
       </div>
       <div class="field">
-        <label>Numero do Pedido <span class="req">*</span></label>
-        <input type="text" id="pedido" placeholder="Ex: 3592" oninput="atualizar()">
+        <label>Vencimento 1ª Parcela <span class="req">*</span></label>
+        <input type="date" id="vencimento" oninput="atualizar()">
       </div>
       <div class="field">
-        <label>Vencimento 1a Parcela <span class="req">*</span></label>
-        <input type="date" id="vencimento" oninput="atualizar()">
+        <label>Número do Pedido <span class="req">*</span></label>
+        <input type="text" id="pedido" placeholder="Ex: 3592" oninput="atualizar()">
       </div>
     </div>
     <div class="field mt">
@@ -809,6 +823,9 @@ function getData(){
     cpf:     document.getElementById('cpf').value.trim()||'___.___.___-__',
     cep:     document.getElementById('cep').value.trim()||'_____-___',
     valor:   document.getElementById('valor').value.trim()||'___',
+    valorCompra:  document.getElementById('valorCompra').value.trim()||'___',
+    valorEntrada: document.getElementById('valorEntrada').value.trim()||'___',
+    dataEntrada:  fmtData(document.getElementById('dataEntrada').value),
     pedido:  document.getElementById('pedido').value.trim()||'___',
     venc:    fmtData(document.getElementById('vencimento').value),
     cidade:  document.getElementById('cidade').value.trim()||'___',
@@ -837,6 +854,7 @@ function corpo(d, print){
 <p>Pelo presente instrumento, de um lado <strong>${l.razao} ("ÓTICAS IDEALIZE")</strong>, pessoa jurídica de direito privado, com sede na <strong>${l.end}, ${l.cidade}, CEP ${l.cep}</strong>, inscrita sob <strong>CNPJ nº ${l.cnpj}</strong>, e de outro lado o(a) ${fn(d.nome)}, residente no CEP ${fn(d.cep)}, portador(a) do CPF ${fn(d.cpf)}, que mutuamente aceitam e outorgam:</p>
 <p class="ct">CLÁUSULA PRIMEIRA – OBJETO</p>
 <p>A <strong>ÓTICAS IDEALIZE</strong> concede ao(a) ADQUIRENTE ${fn(d.nome)}, crédito no valor total de <strong>R$</strong> ${fn(d.valor)}, parcelado em ${txtParcelas(d,fn)}, referente ao pedido nº ${fn(d.pedido)}.</p>
+<p>Valor da compra: <strong>R$</strong> ${fn(d.valorCompra)} &nbsp;|&nbsp; Valor da entrada: <strong>R$</strong> ${fn(d.valorEntrada)} &nbsp;|&nbsp; Data prevista da entrada: ${fn(d.dataEntrada)}.</p>
 <p class="ct">CLÁUSULA SEGUNDA – PAGAMENTO</p>
 <p>O pagamento deverá ser efetuado na rede bancária ou presencialmente em loja. A <strong>ÓTICAS IDEALIZE</strong> entrega ao(a) <strong>ADQUIRENTE</strong> os boletos emitidos pela empresa <strong>ASAAS</strong>. O eventual extravio não justifica atraso, cabendo ao(a) <strong>ADQUIRENTE</strong> pagá-las diretamente à <strong>ÓTICAS IDEALIZE</strong> contrarrecibo.</p>
 <p class="par">§1º. Vencimento do primeiro boleto: ${fn(d.venc)}.</p>
@@ -881,7 +899,7 @@ function processFile(file){
 function gerarPDF(){
   if(!lojaAtual){ document.getElementById('warnBar').classList.add('show'); window.scrollTo({top:0,behavior:'smooth'}); return; }
   let ok = true;
-  ['nome','cpf','cep','valor','pedido','vencimento','dataAss'].forEach(id => {
+  ['nome','cpf','cep','valor','pedido','vencimento','valorCompra','valorEntrada','dataEntrada','dataAss'].forEach(id => {
     const el = document.getElementById(id);
     if(!el.value.trim()){ el.classList.add('err'); ok=false; } else el.classList.remove('err');
   });
